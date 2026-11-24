@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>عالم تصميم البيانات</title>
+<style>
+:root{--navy:#111B3D;--royal:#3157D5;--purple:#7956E8;--mint:#2FD6A3;--sun:#FFC83D;--pink:#FF6B9A;--ink:#1c2447;--mx:0;--my:0}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:var(--ink);min-height:100vh;background:linear-gradient(180deg,#111B3D 0%,#3157D5 55%,#7956E8 100%);overflow-x:hidden}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.star{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;opacity:.7}
+.cloud{position:absolute;width:140px;height:44px;border-radius:44px;background:#ffffff30;transition:transform .3s;transform:translate(calc(var(--mx)*18px),calc(var(--my)*10px))}
+.isl{position:absolute;width:150px;height:36px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7be8b4,#1fa97c);box-shadow:0 8px 0 #0003;animation:fl 6s ease-in-out infinite}
+.isl:after{content:"";position:absolute;left:12%;right:12%;top:60%;height:70px;background:linear-gradient(#a8693a,#6e3f21);clip-path:polygon(0 0,100% 0,60% 100%,40% 100%);z-index:-1}
+@keyframes fl{50%{translate:0 -16px}}
+#app{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:14px 14px 90px}
+.top{display:flex;align-items:center;gap:12px;color:#fff;margin-bottom:12px}
+.top b{font-size:1.1rem}
+.bar{flex:1;height:12px;border-radius:12px;background:#ffffff33;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--sun));border-radius:12px;transition:width .5s}
+.world{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}
+.guide{text-align:center;color:#fff}
+.guide svg{width:130px;animation:fl 3.5s ease-in-out infinite;filter:drop-shadow(0 12px 8px #0005)}
+.bubble{background:#fff;color:var(--ink);border-radius:18px;padding:10px 12px;font-size:.92rem;line-height:1.7;position:relative;margin-bottom:10px}
+.bubble:after{content:"";position:absolute;bottom:-8px;right:50%;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+.card{background:#fff;border-radius:26px;padding:22px;box-shadow:0 18px 0 #0002,0 24px 40px #0004;min-height:380px;animation:pop .5s}
+@keyframes pop{from{opacity:0;transform:perspective(900px) rotateX(10deg) translateY(20px)}}
+h1{font-size:2.2rem;line-height:1.3;color:var(--navy)}
+h2{font-size:1.5rem;color:var(--navy);margin-bottom:6px}
+h3{font-size:1.05rem;color:var(--navy)}
+p{line-height:1.9}
+.def{display:none;text-align:right;margin-top:8px;font-size:.93rem;border-top:2px dashed #cfd6f5;padding-top:8px}
+.ex{color:var(--royal);font-weight:600}
+.lead{background:#eef1ff;border-right:6px solid var(--royal);border-radius:14px;padding:10px 14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:12px 0}
+.tile{border:0;background:#f5f6ff;border-radius:20px;padding:14px;text-align:center;box-shadow:0 6px 0 #c9d0f4;transition:.2s;color:var(--ink)}
+.tile:hover{transform:translateY(-4px) rotate(-1deg)}
+.tile.open{background:#fff;box-shadow:0 6px 0 var(--royal)}
+.tile.open .def{display:block}.tile.open .hint{display:none}
+.tile small{display:block;direction:ltr;color:#6b73a6;font-weight:600}
+.hint{font-size:.78rem;color:#6b73a6}
+.orb{width:68px;height:68px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;font-size:2rem;background:radial-gradient(circle at 30% 25%,#fffa,#fff0 38%),var(--c);box-shadow:inset -7px -9px 16px #0004,0 10px 14px #0003}
+.cube{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:12px;font-size:1.5rem;background:linear-gradient(135deg,#fff5,#0002),var(--c);box-shadow:5px 5px 0 #0003}
+.demo{background:linear-gradient(#eef1ff,#e4e8ff);border-radius:20px;padding:14px;margin-top:14px}
+.demo h3{margin-bottom:8px}
+.btn{border:0;border-radius:16px;padding:10px 20px;color:#fff;font-weight:700;background:linear-gradient(var(--royal),#2443a8);box-shadow:0 5px 0 #1a2f7a}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #1a2f7a}
+.btn.alt{background:linear-gradient(var(--purple),#5a3bc0);box-shadow:0 5px 0 #3e2894}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.term{background:#0d1230;color:#7dffb8;padding:12px;border-radius:12px;text-align:left}
+.cur{animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:0}}
+.phones{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.phone{background:#fff;border:5px solid var(--navy);border-radius:24px;padding:10px;min-height:170px;text-align:center}
+.phone .mini{display:inline-block;margin:2px;padding:4px 6px;font-size:.7rem;border:1px solid #aab;border-radius:6px;background:#f0f0f6}
+.phone .send{background:var(--royal);color:#fff;border:0;border-radius:12px;padding:12px 24px;margin:12px 0;font-weight:700}
+.note{margin-top:8px;min-height:1.6em;font-weight:600;color:var(--royal)}
+.door{width:110px;height:150px;margin:0 auto;border-radius:16px 16px 0 0;background:linear-gradient(135deg,#d99a5b,#a8693a);position:relative;box-shadow:6px 6px 0 #0003}
+.knob{position:absolute;left:12px;top:70px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#e0a800);border:0}
+.sig .knob{animation:pulse 1.2s infinite}
+.sig .door:after{content:"اسحب أو اضغط هنا";position:absolute;left:-4px;top:40px;font-size:.72rem;background:var(--sun);border-radius:8px;padding:2px 6px}
+@keyframes pulse{50%{box-shadow:0 0 0 12px #ffc83d66}}
+.sample{padding:12px;border-radius:14px;background:#fff;border:2px solid #cfd6f5;transition:.2s}
+.sample.hc{background:#000;color:#ffeb3b;border-color:#ffeb3b}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:0;border-radius:20px;padding:7px 14px;background:#fff;color:var(--ink);font-weight:700;box-shadow:0 4px 0 #c9d0f4}
+.chip.on{background:var(--purple);color:#fff;box-shadow:0 4px 0 #3e2894}
+.li{display:flex;justify-content:space-between;background:#fff;border-radius:12px;padding:8px 12px;margin-top:6px;border-right:6px solid var(--mint)}
+.opt{display:block;width:100%;text-align:right;border:3px solid #cfd6f5;background:#f5f6ff;border-radius:16px;padding:11px 14px;margin:8px 0;font-size:1rem;color:var(--ink)}
+.opt:not(:disabled):hover{border-color:var(--purple)}
+.opt.ok{background:#d6f8ea;border-color:var(--mint)}.opt.no{background:#ffe0e8;border-color:var(--pink)}
+.opt:disabled{cursor:default}
+.fb{min-height:1.8em;font-weight:700}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;justify-content:center;gap:12px;padding:12px;background:#111B3Dcc;backdrop-filter:blur(6px)}
+.nav .btn:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.cover{text-align:center;padding:18px 10px}
+.cover input{font:inherit;font-size:1.2rem;padding:12px 16px;border-radius:16px;border:3px solid var(--royal);width:min(420px,90%);text-align:center;margin:14px 0}
+.credit{display:inline-block;background:#eef1ff;border-radius:20px;padding:4px 16px;color:var(--royal);margin:4px 0}
+.err{color:#d6204f;min-height:1.6em;font-weight:700}
+.meta{color:#5b6393;font-size:.9rem}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:12px}
+.cert{border:10px double #c99a1d;border-radius:12px;padding:26px 16px;text-align:center;background:linear-gradient(#fffdf2,#fff7d8)}
+.cert .nm{font-size:2.4rem;color:var(--royal);border-bottom:3px dotted #c99a1d;display:inline-block;padding:0 24px;margin:10px 0;word-break:break-word}
+.seal{width:90px;height:90px;border-radius:50%;margin:10px auto;display:grid;place-items:center;font-size:2.4rem;background:radial-gradient(circle at 30% 25%,#fff8,#fff0 40%),#e0a800;box-shadow:inset -6px -8px 12px #0004,0 8px 12px #0003}
+@media(max-width:700px){.world{grid-template-columns:1fr}.guide svg{width:90px}.phones{grid-template-columns:1fr}h1{font-size:1.7rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff}.bg,.top,.guide,.nav,.noprint{display:none!important}.world{display:block}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="bg" id="bg"></div>
+<div id="app">
+  <div class="top"><b>🌐 عالم تصميم البيانات</b><div class="bar"><i id="pg"></i></div><button class="chip" id="mt" aria-label="تشغيل/إيقاف الصوت" onclick="muted=!muted;this.textContent=muted?'🔇':'🔊'">🔊</button><span id="pt"></span></div>
+  <div class="world">
+    <aside class="guide">
+      <div class="bubble" id="bub"></div>
+      <svg viewBox="0 0 120 150" aria-label="بيكسل، مرشد الرحلة">
+        <defs><radialGradient id="g1" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="#bfe0ff"/><stop offset="1" stop-color="#3157D5"/></radialGradient>
+        <radialGradient id="g2" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#b7c4ff"/></radialGradient></defs>
+        <line x1="60" y1="6" x2="60" y2="22" stroke="#FFC83D" stroke-width="4"/><circle cx="60" cy="8" r="7" fill="#FF6B9A"/>
+        <rect x="18" y="22" width="84" height="64" rx="28" fill="url(#g1)"/>
+        <rect x="30" y="38" width="60" height="32" rx="16" fill="#111B3D"/>
+        <circle cx="48" cy="54" r="7" fill="#2FD6A3"/><circle cx="72" cy="54" r="7" fill="#2FD6A3"/>
+        <path d="M50 66q10 6 20 0" stroke="#2FD6A3" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="32" y="92" width="56" height="44" rx="20" fill="url(#g2)"/>
+        <circle cx="60" cy="114" r="9" fill="#7956E8"/>
+        <circle cx="20" cy="108" r="11" fill="url(#g1)"/><circle cx="100" cy="108" r="11" fill="url(#g1)"/>
+      </svg>
+      <b>بيكسل</b>
+    </aside>
+    <main class="card" id="stage" aria-live="polite"></main>
+  </div>
+</div>
+<div class="nav" id="nav">
+  <button class="btn" id="bPrev" onclick="step(-1)">▶ السابق</button>
+  <button class="btn alt" id="bHome" onclick="go(1)">🏠 الرئيسية</button>
+  <button class="btn" id="bNext" onclick="step(1)">التالي ◀</button>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const S={name:'',i:0};
+const quizState={currentQuestion:0,answers:{},score:0,done:false};
+const LET=['أ','ب','ج'];
+const Q=[
+["الهدف من تصميم البيانات هو:",["زيادة كمية البيانات المعروضة","تنظيم البيانات والتعبير عنها بحيث تصل الرسالة صحيحة للجمهور المستهدف","إخفاء البيانات المهمة"],1],
+["نقل البيانات المقصودة ببساطة من داخل كمية كبيرة من البيانات يسمى:",["التجريد (Abstraction)","الهيكلة (Structuring)","الأيقونة (Icon)"],0],
+["رمز تصويري يُنقل به المعنى دون كلمات ويظهر في المطارات والمحطات هو:",["الأيقونة","الجدول","الرسم التصويري (Pictogram)"],2],
+["الجداول والرسوم البيانية أمثلة على:",["التصور (Visualization)","واجهة سطر الأوامر","الإمكانية"],0],
+["واجهة يُشغَّل فيها الجهاز بإدخال أوامر عن طريق لوحة المفاتيح هي:",["GUI","CUI","UX"],1],
+["الواجهة التي تستخدم الرموز والأزرار وتسمح بإصدار أوامر بديهية هي:",["CUI","UX","GUI"],2],
+["الخبرة أو التأثير العاطفي الذي يكتسبه المستخدمون من التفاعل مع منتج أو خدمة هو:",["تجربة المستخدم (UX)","التصميم الشامل","الدلالة"],0],
+["إشارات تدفع المستخدمين إلى اتخاذ إجراء تسمى:",["Affordance","Signifier","Usability"],1],
+["تصميم يمكن لجميع الناس استخدامه بغض النظر عن العمر أو اللغة أو القدرة الجسدية هو:",["Universal design","Accessibility فقط","Hierarchy"],0],
+["في مبدأ LATCH، التصنيف الذي يعتمد على تسلسل الأحداث من حيث الوقت هو:",["Location","Alphabet","Time"],2]
+];
+const orb=(c,i)=>`<div class="orb" style="--c:${c}">${i}</div>`;
+const tiles=a=>`<div class="grid">${a.map(x=>`<button class="tile" onclick="this.classList.toggle('open')"><div class="orb" style="--c:${x.c}">${x.ic}</div><h3>${x.t}</h3><small>${x.en}</small><span class="hint">اضغط لتكشف التعريف</span><div class="def"><p>${x.d}</p>${x.ex?`<p class="ex">${x.ex}</p>`:''}</div></button>`).join('')}</div>`;
+
+const SC=[
+{b:'',h:()=>`<div class="cover"><div class="row" style="justify-content:center;gap:14px"><span class="cube" style="--c:#7956E8">📊</span><span class="cube" style="--c:#2FD6A3">🧩</span><span class="cube" style="--c:#FF6B9A">🔍</span><span class="cube" style="--c:#FFC83D">🚪</span></div>
+<h1>عالم تصميم البيانات</h1><p class="meta">البرمجة والذكاء الاصطناعي – الصف الأول الثانوي</p>
+<p class="credit"><b>إعداد وتصميم:</b> أحلام شعبان حسن عبد الجواد</p>
+<p>مرحبًا بك في عالم افتراضي تتعلم فيه كيف نجعل البيانات سهلة الفهم والاستخدام.</p>
+<label for="nm"><b>اكتب اسمك ليظهر في شهادتك:</b></label><br><input id="nm" maxlength="40" autocomplete="off" placeholder="اسم الطالب/ة" value="${S.name}" onkeydown="if(event.key==='Enter')enter()">
+<div class="err" id="er"></div><button class="btn" onclick="enter()">🚀 ادخل العالم</button></div>`},
+{b:'اختر جزيرة لتبدأ، أو اضغط «التالي» لنسير بالترتيب.',h:()=>`<h2>خريطة العالم، أهلًا ${esc(S.name)}</h2><p>كل جزيرة تحمل درسًا. اضغط عليها للانتقال.</p><div class="map">${MAP.map((m,k)=>`<button class="tile" onclick="go(${k+2})" ${m[3]&&!quizState.done?'disabled style="opacity:.5"':''}>${orb(m[2],m[1])}<h3>${m[0]}</h3>${m[3]&&!quizState.done?'<small>تفتح بعد الاختبار</small>':''}</button>`).join('')}</div>`},
+{b:'هيا نبدأ! اضغط كل بطاقة لتكشف تعريفها.',h:()=>`<h2>1. تصميم البيانات</h2>
+<div class="lead"><b>تصميم البيانات (Information design):</b> عملية تنظيم والتعبير الإبداعي عن البيانات وفقًا لغرضها، مما يضمن أن الرسالة المقصودة تُنقل بشكل صحيح إلى الجمهور المستهدف.</div>
+<p><b>طرق تصميم البيانات</b></p>`+tiles([
+{t:'التجريد',en:'Abstraction',ic:'🔍',c:'#3157D5',d:'نقل البيانات المقصودة ببساطة من داخل كمية كبيرة من البيانات.',ex:'مثال: خريطة مترو تُظهر المحطات فقط دون تفاصيل الشوارع.'},
+{t:'الرسم التصويري',en:'Pictogram',ic:'🚻',c:'#FF6B9A',d:'رمز تصويري مصمم لغرض نقل البيانات دون استخدام الكلمات. يُستخدم للعلامات ومعلومات في المحطات والمطارات.',ex:'مثال: رمز المخرج 🚪 ودورات المياه 🚻.'},
+{t:'أيقونة',en:'Icon',ic:'✉️',c:'#7956E8',d:'تمثيل لمحتوى البرنامج على كمبيوتر أو هاتف ذكي من خلال الصور والرسوم التوضيحية.',ex:'مثال: ✉️ للبريد، 🖼️ للصور.'},
+{t:'التصور',en:'Visualization',ic:'📊',c:'#2FD6A3',d:'تمثيل البيانات بصريًا لجعلها أكثر قابلية للفهم.',ex:'أمثلة: الجداول، الرسوم البيانية، إلخ.'},
+{t:'الهيكلة',en:'Structuring',ic:'🌳',c:'#FFC83D',d:'التنظيم والتعبير عن البيانات بوضوح وترتيبها وفقًا للعلاقات، الاتصالات، المستويات، المراحل، الترتيب، إلخ.',ex:'أمثلة: القوائم الهرمية (hierarchical) على صفحات الويب، خرائط المتاجر الكبيرة، إلخ.'}])},
+{b:'الواجهة هي الجسر بينك وبين الجهاز. جرّب النوعين!',h:()=>`<h2>2. تقنيات التصميم لسهولة الفهم</h2>`+tiles([
+{t:'واجهة المستخدم',en:'UI',ic:'🖥️',c:'#3157D5',d:'نظام لنقل البيانات بين البشر والأجهزة.',ex:'أمثلة: إدخال الصوت، الشاشة التي تعمل باللمس، لوحة المفاتيح، إلخ.'},
+{t:'واجهة سطر الأوامر',en:'CUI',ic:'⌨️',c:'#111B3D',d:'واجهة مستخدم حيث يتم تشغيل الجهاز بإدخال أوامر عن طريق لوحة المفاتيح.'},
+{t:'واجهة المستخدم الرسومية',en:'GUI',ic:'🖱️',c:'#2FD6A3',d:'واجهة مستخدم تسمح للمستخدمين بإصدار أوامر بديهية وطريقة سهلة الفهم باستخدام الرموز والأزرار.'}])+
+`<div class="demo"><h3>جرّب: نسخ ملف بطريقتين</h3><div class="row"><button class="btn" onclick="ui('cui')">CUI</button><button class="btn alt" onclick="ui('gui')">GUI</button></div><div id="uiv" style="margin-top:10px"><p>اختر نوع الواجهة.</p></div></div>`},
+{b:'قارن بين التطبيقين. الفرق في التصميم وليس فيك!',h:()=>`<h2>3. تجربة المستخدم (UX)</h2>
+<div class="lead"><b>تجربة المستخدم (User experience – UX):</b> الخبرة أو التأثير العاطفي الذي يكتسبه المستخدمون من التفاعل مع منتج أو خدمة.</div>
+<p><b>مثال:</b> المهمة هي إرسال رسالة. جرّب التطبيقين واضغط على الأزرار.</p>
+<div class="phones" style="margin-top:10px"><div class="phone"><h3>التطبيق الأول (بسيط)</h3><button class="send" onclick="ux(0,true)">إرسال ✉️</button><p class="note" id="n0"></p></div>
+<div class="phone"><h3>التطبيق الثاني (مزدحم)</h3><div id="crowd"></div><p class="note" id="n1"></p></div></div>
+<p class="note" id="uxr"></p>`,i:()=>{const w=['إعدادات','ملفات','صور','بحث','عروض','ألعاب','أخبار','متجر','خرائط','مساعدة','حسابي','إعلان'];const el=$('#crowd');w.sort(()=>Math.random()-.5);w.splice(5,0,'SEND');el.innerHTML=w.map(x=>x==='SEND'?'<button class="mini" style="background:var(--royal);color:#fff" onclick="ux(1,true)">إرسال</button>':`<button class="mini" onclick="ux(1,false)">${x}</button>`).join('')}},
+{b:'الزر يقول «يمكنك الضغط»، والإشارة تقول «اضغط هنا».',h:()=>`<h2>4. الإمكانية والدلالة</h2>`+tiles([
+{t:'الإمكانية',en:'Affordance',ic:'🔘',c:'#3157D5',d:'الإجراءات أو العمليات التي يمكن تنفيذها على كائن.',ex:'مثال: زر واضح يمكن الضغط عليه، ومقبض يمكن سحبه.'},
+{t:'دلالة',en:'Signifier',ic:'💡',c:'#FFC83D',d:'إشارات تدفع المستخدمين إلى اتخاذ إجراء.',ex:'مثال: توهج أو سهم أو كلمة «اضغط هنا».'}])+
+`<div class="demo" id="ds"><h3>جرّب على الباب</h3><div class="door"><button class="knob" aria-label="مقبض الباب" onclick="$('#dn').textContent='الإمكانية: المقبض يمكن سحبه وفتح الباب.'"></button></div>
+<div class="row" style="justify-content:center;margin-top:12px"><button class="btn alt" onclick="$('#ds').classList.toggle('sig')">إظهار/إخفاء الدلالة</button></div><p class="note" id="dn" style="text-align:center">اضغط على المقبض.</p></div>`},
+{b:'الجميع يستحق أن يستخدم التصميم بسهولة.',h:()=>`<h2>5. الاستخدام والوصول والتصميم الشامل</h2>`+tiles([
+{t:'قابلية الاستخدام',en:'Usability',ic:'📏',c:'#3157D5',d:'مقياس يُستخدم للإشارة إلى مدى سهولة وقابلية الفهم من أجل المستخدمين.'},
+{t:'إمكانية الوصول',en:'Accessibility',ic:'♿',c:'#2FD6A3',d:'سهولة الوصول إلى البيانات والخدمات لمجموعة واسعة من الأشخاص.'},
+{t:'التصميم الشامل',en:'Universal design',ic:'🌍',c:'#7956E8',d:'تصميم يتم إنشاؤه بشكل مدروس مع هدف أن جميع الناس، بغض النظر عن العمر أو اللغة أو الجنسية أو القدرة الجسدية، يمكنهم استخدامه بدون صعوبة.'}])+
+`<div class="demo"><h3>جرّب: اجعل النص مناسبًا لك</h3><div class="row"><button class="btn" onclick="fz(2)">A+</button><button class="btn" onclick="fz(-2)">A−</button><button class="btn alt" onclick="$('#smp').classList.toggle('hc')">تباين عالٍ</button></div><div class="sample" id="smp" style="margin-top:10px;font-size:18px">خيارات الضبط تجعل المحتوى متاحًا لعدد أكبر من الناس.</div></div>`},
+{b:'LATCH خمس طرق لترتيب المعلومات. اضغط كل حرف!',h:()=>`<h2>6. مبدأ LATCH</h2><p>لتنظيم وعرض البيانات بطريقة تسهل على المستخدم الفهم.</p>
+<div class="chips" id="lc">${LT.map((x,k)=>`<button class="chip" onclick="latch(${k})">${x[0]} ${x[1]}</button>`).join('')}</div>
+<div class="lead" id="ld">اختر حرفًا لترى التعريف وكيف يتغير ترتيب القائمة.</div><h3>أماكن في المدرسة</h3><div id="ll"></div>`,i:()=>latch(0)},
+{b:'كل سؤال تجيب عنه مرة واحدة فقط. ركّز!',h:()=>'',i:()=>renderQuiz()},
+{b:'مبروك! أنهيت الرحلة.',h:()=>{const sc=quizState.score;return`<div class="cert"><div class="seal">🏅</div><h1>شهادة إتمام</h1><p>يشهد «عالم تصميم البيانات» بأن الطالب/ة</p><div class="nm">${esc(S.name)}</div><p>قد أتم رحلة التعلم في مجال تصميم البيانات وتسهيل الفهم، وحصل على</p><h2>${sc} من 100</h2><p class="meta">${new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}</p></div><div class="row noprint" style="justify-content:center;margin-top:14px"><button class="btn" onclick="window.print()">🖨️ طباعة الشهادة</button><button class="btn alt" onclick="restart()">↺ إعادة الرحلة</button></div>`}}
+];
+const MAP=[['تصميم البيانات','🔍','#3157D5'],['الواجهات UI','🖥️','#7956E8'],['تجربة المستخدم','😊','#FF6B9A'],['الإمكانية والدلالة','💡','#FFC83D'],['الاستخدام والوصول','♿','#2FD6A3'],['مبدأ LATCH','🧭','#3157D5'],['الاختبار','📝','#7956E8'],['الشهادة','🏅','#e0a800',1]];
+MAP[6][3]=0;
+const LT=[
+['L','الموقع (Location)','يعتمد التصنيف على الموقع الفعلي.'],
+['A','الأبجدية (Alphabet)','يعتمد التصنيف على الترتيب الأبجدي أو البياني.'],
+['T','الوقت (Time)','يعتمد التصنيف على تسلسل الأحداث من حيث الوقت.'],
+['C','الفئة (Category)','يعتمد التصنيف على الفروقات بين الأشياء ويُستخدم كمعيار لتمييز المجالات.'],
+['H','الهرمية (Hierarchy)','يعتمد التصنيف على التغيرات الكمية مثل الحجم، المستوى، الدرجة.']];
+const PL=[{n:'المكتبة',f:0,t:630,c:'خدمات',h:2},{n:'معمل الحاسب',f:2,t:540,c:'معامل',h:3},{n:'المسرح',f:0,t:720,c:'أنشطة',h:3},{n:'الكافتيريا',f:1,t:600,c:'خدمات',h:1},{n:'معمل العلوم',f:1,t:660,c:'معامل',h:2}];
+const FL=['الدور الأرضي','الدور الأول','الدور الثاني'],HL=['صغير','متوسط','كبير'];
+const hm=t=>`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function go(n){S.i=n;render()}
+function step(d){if(S.i===8&&d>0&&!quizState.done)return;go(Math.max(1,Math.min(9,S.i+d)))}
+function render(){
+  const s=SC[S.i];$('#stage').innerHTML=s.h();$('#bub').textContent=s.b||'أنا بيكسل، مرشدك في هذا العالم!';
+  if(s.i)s.i();
+  $('#nav').style.display=S.i===0?'none':'flex';
+  $('#bPrev').disabled=S.i<=1;$('#bNext').disabled=S.i>=9||(S.i===8&&!quizState.done);$('#bHome').disabled=S.i===1;
+  $('#pg').style.width=(S.i/9*100)+'%';$('#pt').textContent=S.i+' / 9';
+  window.scrollTo({top:0});if(S.i>0)snd(S.i===9?'win':'nav');
+}
+function intro(){
+  $('#bub').textContent='سؤال تمهيدي قبل أن نبدأ. لا توجد درجة عليه!';
+  $('#stage').innerHTML=`<div class="cover"><div class="orb" style="--c:#FFC83D">🤔</div><h2>سؤال تمهيدي يا ${esc(S.name)}</h2><p>معك خريطة فيها آلاف التفاصيل، وتريد الوصول إلى مكان واحد فقط. ما الذي يساعدك أكثر؟</p>
+  <div style="max-width:520px;margin:auto">${['قراءة كل التفاصيل واحدة واحدة','عرض المعلومة المهمة فقط بشكل بسيط وواضح','إخفاء الخريطة كلها'].map((o,k)=>`<button class="opt" data-k="${k}" onclick="introPick(${k})">${LET[k]}. ${o}</button>`).join('')}</div>
+  <div class="fb" id="fb"></div><button class="btn" id="go1" style="display:none" onclick="go(1)">🚀 ابدأ الرحلة</button></div>`;
+}
+let introDone=false;
+function introPick(k){
+  if(introDone)return;introDone=true;
+  document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const j=+b.dataset.k;if(j===1)b.classList.add('ok');else if(j===k)b.classList.add('no')});
+  snd(k===1?'ok':'no');
+  const f=$('#fb');f.textContent=k===1?'✅ أحسنت! هذا بالضبط ما يفعله «التجريد» في تصميم البيانات.':'الإجابة الأنسب هي (ب): إظهار المعلومة المهمة فقط، وهذا ما يسمى «التجريد». سنتعلمه الآن.';
+  f.style.color=k===1?'#0b8f68':'#7956E8';$('#go1').style.display='inline-block';
+}
+function enter(){const v=$('#nm').value.trim();if(!v){$('#er').textContent='اكتب اسمك أولًا لتدخل العالم.';$('#nm').focus();return}S.name=v;intro()}
+function ui(k){$('#uiv').innerHTML=k==='cui'?'<pre class="term" dir="ltr">C:\\&gt; copy photo.jpg D:\\<br>1 file(s) copied.<span class="cur">_</span></pre><p>يجب أن تتذكر الأمر وتكتبه بلوحة المفاتيح.</p>':'<div class="row"><button class="btn" onclick="this.textContent=\'✅ تم النسخ\'">📄 نسخ الصورة</button><span class="cube" style="--c:#FFC83D">🖼️</span></div><p>ضغطة واحدة على زر برمز واضح تنفّذ الأمر.</p>'}
+const clicks=[0,0];
+function ux(a,ok){if(ok){$('#n'+a).textContent=a?`وصلت لزر الإرسال بعد ${clicks[1]+1} ضغطة.`:'تم الإرسال من أول ضغطة.';$('#uxr').textContent='لاحظ: سهولة الوصول للزر اختلفت بين التطبيقين، والسبب تصميم التطبيق وليس قدرتك أنت.'}else{clicks[1]++;$('#n1').textContent=`جرّبت ${clicks[1]} زرًا، ابحث عن «إرسال».`}}
+let fs=18;function fz(d){fs=Math.max(12,Math.min(32,fs+d));$('#smp').style.fontSize=fs+'px'}
+function latch(k){
+  document.querySelectorAll('#lc .chip').forEach((c,j)=>c.classList.toggle('on',j===k));
+  $('#ld').innerHTML=`<b>${LT[k][1]}:</b> ${LT[k][2]}`;
+  const a=[...PL];
+  if(k===0)a.sort((x,y)=>x.f-y.f);if(k===1)a.sort((x,y)=>x.n.localeCompare(y.n,'ar'));if(k===2)a.sort((x,y)=>x.t-y.t);
+  if(k===3)a.sort((x,y)=>x.c.localeCompare(y.c,'ar')||x.n.localeCompare(y.n,'ar'));if(k===4)a.sort((x,y)=>y.h-x.h);
+  const tag=p=>[FL[p.f],'',hm(p.t),p.c,HL[p.h-1]][k]||'';
+  $('#ll').innerHTML=a.map(p=>`<div class="li"><b>${p.n}</b><span>${tag(p)}</span></div>`).join('');
+}
+function renderQuiz(){
+  const st=quizState,el=$('#stage');
+  if(st.done){snd('win');el.innerHTML=`<div class="cover"><div class="seal" style="margin:auto">🏆</div><h2>أحسنت يا ${esc(S.name)}!</h2><h1>${st.score} / 100</h1><p>أجبت عن الأسئلة العشرة. تقدر الآن تحصل على شهادتك.</p><button class="btn" onclick="go(9)">🏅 عرض الشهادة</button></div>`;$('#bNext').disabled=false;return}
+  const n=st.currentQuestion,q=Q[n];
+  el.innerHTML=`<h2>📝 الاختبار: سؤال ${n+1} من 10</h2><div class="bar" style="background:#dfe3fa"><i style="width:${n*10}%"></i></div><p style="font-size:1.15rem;margin-top:10px"><b>${q[0]}</b></p>${q[1].map((o,k)=>`<button class="opt" data-k="${k}" onclick="pick(${n},${k})">${LET[k]}. ${o}</button>`).join('')}<div class="fb" id="fb"></div>`;
+}
+function submitAnswer(id,sel,correct){
+  if(quizState.answers[id]!==undefined)return false;
+  quizState.answers[id]=sel;
+  const ok=sel===correct;if(ok)quizState.score+=10;
+  document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const k=+b.dataset.k;if(k===correct)b.classList.add('ok');else if(k===sel)b.classList.add('no')});
+  snd(ok?'ok':'no');const f=$('#fb');f.textContent=ok?'✅ إجابة صحيحة! +10':'❌ الإجابة الصحيحة هي: '+LET[correct]+'. '+Q[id][1][correct];f.style.color=ok?'#0b8f68':'#d6204f';
+  setTimeout(()=>{
+    if(quizState.currentQuestion<9){quizState.currentQuestion++}else{quizState.done=true}
+    if(S.i===8)renderQuiz();
+  },1600);
+  return true;
+}
+function pick(n,k){submitAnswer(n,k,Q[n][2])}
+function restart(){quizState.currentQuestion=0;quizState.answers={};quizState.score=0;quizState.done=false;go(1)}
+
+let muted=false,AC;
+function snd(t){if(muted)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const q={click:[[660,.06]],nav:[[440,.07],[660,.09]],ok:[[523,.12],[659,.12],[784,.22]],no:[[300,.2],[220,.3]],win:[[523,.15],[659,.15],[784,.15],[1047,.45]]}[t];let at=AC.currentTime;q.forEach(([f,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=t==='no'?'sawtooth':'triangle';o.frequency.value=f;g.gain.setValueAtTime(.001,at);g.gain.exponentialRampToValueAtTime(.18,at+.02);g.gain.exponentialRampToValueAtTime(.001,at+d);o.connect(g);g.connect(AC.destination);o.start(at);o.stop(at+d+.02);at+=d*.9})}catch(e){}}
+document.addEventListener('click',e=>{if(e.target.closest('.tile,.chip,.mini,.send,.knob,.btn:not(#bPrev):not(#bNext)'))snd('click')});
+// عالم افتراضي: نجوم وسحب وجزر عائمة وحركة مع المؤشر
+(function(){const b=$('#bg');let h='';
+for(let i=0;i<40;i++)h+=`<i class="star" style="left:${Math.random()*100}%;top:${Math.random()*70}%;opacity:${.3+Math.random()*.6}"></i>`;
+for(let i=0;i<4;i++)h+=`<i class="cloud" style="left:${i*28}%;top:${12+i*17}%"></i>`;
+h+='<i class="isl" style="left:3%;bottom:8%"></i><i class="isl" style="right:4%;bottom:20%;animation-delay:-2s;scale:.8"></i>';
+b.innerHTML=h;
+addEventListener('mousemove',e=>{document.documentElement.style.setProperty('--mx',(e.clientX/innerWidth-.5).toFixed(2));document.documentElement.style.setProperty('--my',(e.clientY/innerHeight-.5).toFixed(2))});
+})();
+render();
+</script>
+</body>
+</html>
